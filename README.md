@@ -1,3 +1,27 @@
+# TSMultiSelect
+
+## Purpose
+
+This is a react component that will be used to select a subset of objects passed to it in order to process them in some way.
+
+## Use
+```
+<TSMultiSelect
+  objects={this.state.data}
+  selected={this.state.selected}
+  onClickHandler={() => {}}
+/>
+```
+
+* `data` is the list of objects to be used for selection
+*  `selected` is the list of objects selected by the `onClickHandler`
+* `onClickHandler` is the function passed in so component knows how to select the items
+
+## Notes
+
+Ideally, the onClickHandler that is already implemented in `App.js` moves in the component as the default allowing the user to override it.
+
+### Other Junk
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
@@ -1516,17 +1540,17 @@ When you build the project, Create React App will place the `public` folder cont
 2. Install `serve` by running `npm install --save serve`.
 
 3. Add this line to `scripts` in `package.json`:
-    
+
     ```
     "now-start": "serve build/",
     ```
-    
+
 4. Run `now` from your project directory. You will see a **now.sh** URL in your output like this:
-    
+
     ```
     > Ready! https://your-project-dirname-tpspyhtdtk.now.sh (copied to clipboard)
     ```
-    
+
     Paste that URL into your browser when the build is complete, and you will see your deployed app.
 
 Details are available in [this article.](https://zeit.co/blog/now-static)
