@@ -1,33 +1,22 @@
 import React from 'react'
+import _ from 'lodash'
 
 export default class TSMultiSelect extends React.Component {
-  // constructor(props){
-  //   super(props)
-  // }
 
   static propTypes = {
     objects: React.PropTypes.array.isRequired,
+    selected: React.PropTypes.array.isRequired,
     title: React.PropTypes.string,
-    onSubmit: React.PropTypes.func
+    onClickHandler: React.PropTypes.func.isRequired,
+    onSubmitHandler: React.PropTypes.func
   }
 
   static defaultProps = {
     title: 'Select 1 or more records'
   }
 
-  onSelect(event) {
-    event.preventDefault()
-    let input = document.getElementById("objectIDs")
-    let newObjectID = event.target.attributes.getNamedItem("data-objectID").value
-
-    if (input.value === "") {
-      input.value = newObjectID
-    } else {
-      input.value = input.value +","+ newObjectID
-    }
-
-    let arr = input.value.split(",")
-    return console.log(arr)
+  isSelected(objectID) {
+    return _.includes(this.props.selected, `${objectID}`) ? 'selected' : ''
   }
 
   render() {
@@ -37,7 +26,15 @@ export default class TSMultiSelect extends React.Component {
         <h3>{this.props.title}</h3>
         <ul className='ts-multi-select object-list'>
           {this.props.objects.map((object, index) => {
-            return <li key={index} onClick={this.onSelect} data-objectID={object.id}>{`${object.name}`}</li>
+            return (
+                    <li
+                      key={index}
+                      onClick={this.props.onClickHandler}
+                      data-objectID={object.id}
+                      className={`ts-multi-select object-item ${this.isSelected(object.id)}`}>
+                      {`${object.name}`}
+                    </li>
+                  )
           })}
         </ul>
       </div>
