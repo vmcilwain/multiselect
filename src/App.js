@@ -29,13 +29,7 @@ class App extends Component {
   }
   render() {
     return (
-      <div>
-        <ul>
-          {this.state.data.map((child) => {
-            return <li>{`${child.name} ${child.id}`}</li>
-          })}
-        </ul>
-      </div>
+      <TSMultiSelect objects={this.state.data} />
     );
   }
 }

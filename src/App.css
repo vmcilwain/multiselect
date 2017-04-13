@@ -22,3 +22,15 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.select-border {
+  border: 1px solid black;
+  max-width: 50%;
+  padding: 1em;
+}
+
+.object-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
