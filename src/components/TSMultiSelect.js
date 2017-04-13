@@ -6,8 +6,8 @@ export default class TSMultiSelect extends React.Component {
   static propTypes = {
     objects: React.PropTypes.array.isRequired,
     selected: React.PropTypes.array.isRequired,
-    title: React.PropTypes.string,
     onClickHandler: React.PropTypes.func.isRequired,
+    title: React.PropTypes.string,
     onSubmitHandler: React.PropTypes.func
   }
 

@@ -8,6 +8,7 @@ class App extends Component {
 
   constructor(props) {
     super(props)
+
     this.state = {
       data: [],
       selected: []
@@ -18,7 +19,7 @@ class App extends Component {
 
   onSelect(event) {
     event.preventDefault()
-    let objectID = event.target.attributes.getNamedItem("data-objectid").value
+    let objectID = event.target.attributes.getNamedItem("data-objectID").value
     let localSelected = _.clone(this.state.selected)
     let index = _.indexOf(localSelected, objectID)
 

@@ -45,6 +45,8 @@
 }
 
 .selected {
-  color: blue;
+  background-color: #80dfff;
   border: 1px black solid;
+  border-radius: 1em;
+  max-height: 1em;
 }
