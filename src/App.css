@@ -23,20 +23,20 @@
   to { transform: rotate(360deg); }
 }
 
-.select-border {
+.multi-select .border {
   border: 1px solid black;
   max-width: 50%;
   padding: 1em;
 }
 
-.object-list {
+.multi-select .objects-list {
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
 
-.object-item {
+.multi-select .object {
     float: left;
     display: block;
     text-align: center;
@@ -44,9 +44,13 @@
     text-decoration: none;
 }
 
-.selected {
+.multi-select .selected {
   background-color: #80dfff;
   border: 1px black solid;
   border-radius: 1em;
   max-height: 1em;
+}
+
+.muti-select .title {
+  font-weight: bold;
 }
