@@ -39,8 +39,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.selected)
-
     return (
       <MultiSelect
         objects={this.state.data}
