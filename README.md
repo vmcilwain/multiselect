@@ -52,6 +52,11 @@ componentDidMount() {
 *  `selected` is the list of objects selected by the `onClickHandler`
 * `onClickHandler` is the function passed to the component for processing
 
+Optional
+
+* `titleStyle` is for customizing the css of the title of the multi select component
+* `title`  is for customizing the title text of the multi select component
+
 ## Notes
 
 Ideally, the onClickHandler that is already implemented in `App.js` moves in the component as the default allowing the user to override it.
