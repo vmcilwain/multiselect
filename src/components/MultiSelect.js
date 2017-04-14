@@ -10,6 +10,7 @@ export default class MultiSelect extends React.Component {
     this.deselectAllObjects = this.deselectAllObjects.bind(this)
     this.buildRadioButtonNode = this.buildRadioButtonNode.bind(this)
     this.selectOption = this.selectOption.bind(this)
+    // this.isChecked = this.isChecked.bind(this)
   }
 
   static propTypes = {
@@ -46,13 +47,15 @@ export default class MultiSelect extends React.Component {
     this.props.onClickHandler(localSelected)
   }
 
-  selectOption() {
-    let selectedOption = document.querySelector('input[name="selectOptions"]:checked').value
+  selectOption(event) {
+    let selectedOption = event.target.value
 
     if (selectedOption === 'All') {
       this.selectAllObjects()
+      this.setState({selectedOption: 'All'})
     } else {
       this.deselectAllObjects()
+      this.setState({selectedOption: 'None'})
     }
   }
 
@@ -78,7 +81,6 @@ export default class MultiSelect extends React.Component {
       </span>
     )
   }
-
 
   render() {
     return (
