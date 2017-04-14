@@ -10,7 +10,6 @@ export default class MultiSelect extends React.Component {
     this.deselectAllObjects = this.deselectAllObjects.bind(this)
     this.buildRadioButtonNode = this.buildRadioButtonNode.bind(this)
     this.selectOption = this.selectOption.bind(this)
-    // this.isChecked = this.isChecked.bind(this)
   }
 
   static propTypes = {
