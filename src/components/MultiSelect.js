@@ -18,7 +18,6 @@ export default class MultiSelect extends React.Component {
     onClickHandler: React.PropTypes.func.isRequired,
     title: React.PropTypes.string,
     titleStyle: React.PropTypes.string,
-    onSubmitHandler: React.PropTypes.func
   }
 
   static defaultProps = {
