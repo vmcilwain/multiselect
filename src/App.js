@@ -17,20 +17,8 @@ class App extends Component {
     this.onSelect = this.onSelect.bind(this)
   }
 
-  onSelect(event) {
-    event.preventDefault()
-    let objectID = event.target.attributes.getNamedItem("data-objectID").value
-    let localSelected = _.clone(this.state.selected)
-    let index = _.indexOf(localSelected, objectID)
-
-    if (index === -1) {
-      localSelected.push(objectID)
-    } else {
-      _.remove(localSelected, (n) => {
-        return n === objectID
-      })
-    }
-    this.setState({selected: _.uniq(localSelected)})
+  onSelect(array) {
+    this.setState({selected: _.uniq(array)})
   }
 
   componentDidMount() {

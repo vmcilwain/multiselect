@@ -2,6 +2,11 @@ import React from 'react'
 import _ from 'lodash'
 
 export default class TSMultiSelect extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.selectItem = this.selectItem.bind(this)
+  }
 
   static propTypes = {
     objects: React.PropTypes.array.isRequired,
@@ -19,6 +24,21 @@ export default class TSMultiSelect extends React.Component {
     return _.includes(this.props.selected, `${objectID}`) ? 'selected' : ''
   }
 
+  selectItem(event) {
+    let objectID = event.target.attributes.getNamedItem("data-objectID").value
+    let localSelected = _.clone(this.props.selected)
+    let index = _.indexOf(localSelected, objectID)
+
+    if (index === -1) {
+      localSelected.push(objectID)
+    } else {
+      _.remove(localSelected, (n) => {
+        return n === objectID
+      })
+    }
+    this.props.onClickHandler(localSelected)
+  }
+
   render() {
     return (
       <div className='ts-multi-select select-border'>
@@ -29,7 +49,7 @@ export default class TSMultiSelect extends React.Component {
             return (
                     <li
                       key={index}
-                      onClick={this.props.onClickHandler}
+                      onClick={this.selectItem}
                       data-objectID={object.id}
                       className={`ts-multi-select object-item ${this.isSelected(object.id)}`}>
                       {`${object.name}`}
