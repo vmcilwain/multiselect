@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash'
 import logo from './logo.svg';
 import './App.css';
-import TSMultiSelect from './components/TSMultiSelect';
+import MultiSelect from './components/MultiSelect';
 
 class App extends Component {
 
@@ -42,7 +42,7 @@ class App extends Component {
     console.log(this.state.selected)
 
     return (
-      <TSMultiSelect
+      <MultiSelect
         objects={this.state.data}
         selected={this.state.selected}
         onClickHandler={this.onSelect}
