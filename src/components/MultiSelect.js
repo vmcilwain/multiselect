@@ -1,15 +1,20 @@
 import React from 'react'
-import _ from 'lodash'
+import _ from 'lodash';
 
 export default class MultiSelect extends React.Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      selectedOption: null
+    }
+
     this.selectItem = this.selectItem.bind(this)
     this.selectAllObjects = this.selectAllObjects.bind(this)
     this.deselectAllObjects = this.deselectAllObjects.bind(this)
-    this.buildRadioButtonNode = this.buildRadioButtonNode.bind(this)
+    this.buildCheckBoxNode = this.buildCheckBoxNode.bind(this)
     this.selectOption = this.selectOption.bind(this)
+    this.toggleState = this.toggleState.bind(this)
   }
 
   static propTypes = {
@@ -22,7 +27,7 @@ export default class MultiSelect extends React.Component {
 
   static defaultProps = {
     title: 'Select 1 or more records',
-    titleStyle: 'muti-select title'
+    titleStyle: 'multiselect title-bar title'
   }
 
   isSelected(objectID) {
@@ -48,12 +53,19 @@ export default class MultiSelect extends React.Component {
   selectOption(event) {
     let selectedOption = event.target.value
 
-    if (selectedOption === 'All') {
+    if (selectedOption === 'selectAll') {
+      if (this.state.selectedOption === 'All') {
+        this.deselectAllObjects()
+        this.toggleState('None')
+        return
+      }
       this.selectAllObjects()
-      this.setState({selectedOption: 'All'})
+      this.refs.deselectAll.checked=false
+      this.toggleState('All')
     } else {
       this.deselectAllObjects()
-      this.setState({selectedOption: 'None'})
+      this.refs.selectAll.checked=false
+      this.toggleState('None')
     }
   }
 
@@ -71,32 +83,40 @@ export default class MultiSelect extends React.Component {
     this.props.onClickHandler([])
   }
 
-  buildRadioButtonNode(value, title) {
+  buildCheckBoxNode(value, label){
     return (
       <span>
-        <input type='radio' name='selectOptions' onClick={this.selectOption} value={value}/>
-        <label>{title}</label>
+        <input type='checkbox' name={value} ref={value} value={value} onChange={this.selectOption}/>
+        {label}
       </span>
+
     )
+  }
+
+  toggleState(state) {
+    this.setState({selectedOption: state})
   }
 
   render() {
     return (
       <div>
-        <span className={this.props.titleStyle}>{this.props.title}</span>
+        <table className='multiselect table'>
+          <tr>
+            <td className={this.props.titleStyle}>{this.props.title}</td>
+            <td>{this.buildCheckBoxNode('selectAll', 'Select All')}</td>
+            <td>{this.buildCheckBoxNode('deselectAll', 'Deselect All')}</td>
+          </tr>
+        </table>
 
-        {this.buildRadioButtonNode('All', 'Select All')}
-        {this.buildRadioButtonNode('None', 'Deselect All')}
-
-        <div className='multi-select border'>
-          <ul className='multi-select objects-list'>
+        <div className='multiselect border'>
+          <ul className='multiselect objects-list'>
             {this.props.objects.map((object, index) => {
               return (
                 <li
                   key={index}
                   onClick={this.selectItem}
                   data-objectID={object.id}
-                  className={`multi-select object ${this.isSelected(object.id)}`}>
+                  className={`multiselect object ${this.isSelected(object.id)}`}>
                   {`${object.name}`}
                 </li>
               )

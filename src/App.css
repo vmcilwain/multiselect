@@ -23,34 +23,64 @@
   to { transform: rotate(360deg); }
 }
 
-.multi-select .border {
+.multiselect.table {
+  border-collapse: collapse;
+  width: 30em;
+}
+.multiselect.table td, .multiselect.table th {
+  border: none;
+}
+.multiselect.border {
   border: 1px solid black;
-  max-width: 50%;
-  padding: 1em;
+  max-width: 50em;
+  padding: .5em;
+  overflow: auto;
 }
-
-.multi-select .objects-list {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+.multiselect label {
+  display: inline;
 }
-
-.multi-select .object {
-    float: left;
-    display: block;
-    text-align: center;
-    padding: 1em .3em;
-    text-decoration: none;
+.multiselect li {
+  margin: 0 0.5em 0.5em 0;
 }
-
-.multi-select .selected {
-  background-color: #80dfff;
-  border: 1px black solid;
-  border-radius: 1em;
-  max-height: 1em;
-}
-
-.muti-select .title {
+.multiselect.title {
   font-weight: bold;
+  font-size: 1em;
+}
+.multiselect.objects-list {
+  margin: 0;
+}
+.multiselect.objects-list li {
+  display: inline;
+  float: left;
+  margin: 0;
+}
+.multiselect.objects-list li a, .multiselect.objects-list li span {
+  display: block;
+  padding: 0.5em 1em;
+  position: relative;
+}
+.multiselect.object {
+  background: #F5F5F5;
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #666666;
+  padding: 0.2em 0.4em;
+  border-radius: 0.3em;
+}
+.multiselect.object:hover {
+  height: auto;
+}
+.multiselect.selected {
+  background: #99BBE3;
+  color: #1D4473;
+}
+.multiselect .orange_gradient, .multiselect .multiselect.object:hover {
+  height: 31px;
+  border-color: #ff6600;
+  color: white;
+  background-color: #FFA96F;
+  background-image: linear-gradient(to bottom, #FFA96F, #ff6600);
+}
+.multiselect .orange_gradient:hover, .multiselect .multiselect.object:hover {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 10px rgba(255, 255, 255, 0.5);
 }
