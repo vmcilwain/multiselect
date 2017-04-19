@@ -40,6 +40,8 @@ class App extends Component {
   render() {
     return (
       <MultiSelect
+      	idKey="id"
+      	displayKey="name"
         objects={this.state.data}
         selected={this.state.selected}
         onClickHandler={this.onSelect}
