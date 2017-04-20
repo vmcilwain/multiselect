@@ -93,7 +93,7 @@ export default class MultiSelect extends React.Component {
       <div>
         <div>
           <span className={this.props.titleStyle}>{this.props.title}</span>
-          <i className={`fa ${this.possibleSelections[this.state.current].klass} fa-2x`} aria-hidden="true" onClick={this.selectOption}></i>
+          <i className={`fa ${this.possibleSelections[this.state.current].klass}`} aria-hidden="true" onClick={this.selectOption}></i>
           <label>{this.possibleSelections[this.state.current].label}</label>
         </div>
 
