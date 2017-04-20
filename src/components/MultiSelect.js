@@ -8,10 +8,20 @@ export default class MultiSelect extends React.Component {
 
 		this.getObjectId = this.getObjectId.bind(this);
 		this.getObjectDisplayName = this.getObjectDisplayName.bind(this);
-    this.selectItem = this.selectItem.bind(this)
-    this.selectAll = this.selectAll.bind(this)
-    this.deselectAll = this.deselectAll.bind(this)
-    this.selectOption = this.selectOption.bind(this)
+    this.selectItem = this.selectItem.bind(this);
+    this.selectAll = this.selectAll.bind(this);
+    this.deselectAll = this.deselectAll.bind(this);
+    this.selectOption = this.selectOption.bind(this);
+
+    this.possibleSelections = {
+      all: {label: 'Deselect All', klass: 'fa-check-square-o'},
+      none: {label: 'Select All', klass: 'fa-square-o'},
+      mixed: {label: 'Deselect All', klass: 'fa-minus-square-o'}
+    }
+
+    this.state = {
+      current: this.getCurrentState(props)
+    }
   }
 
   static propTypes = {
@@ -29,6 +39,9 @@ export default class MultiSelect extends React.Component {
     titleStyle: 'multiselect title-bar title'
   }
 
+  getCurrentState(props){
+    return _.isEmpty(props.selected) ? 'none' : (props.objects.length !== props.selected.length ? 'mixed' : 'all')
+  }
 
   getSelected(objectID) {
 	  return _.find(this.props.selected, object => this.getObjectId(object) === objectID);
@@ -46,110 +59,27 @@ export default class MultiSelect extends React.Component {
     }
 
     this.props.onClickHandler(localSelected)
+    this.setState({current: this.getCurrentState(this.props)})
   }
 
   selectOption(event) {
-	  debugger
-	  const selectedOption = event.target.name;
-	  if (selectedOption === 'selectAll') {
-		  event.target.checked ? this.deselectAllObjects() : this.selectAllObjects();
-		  return
-		}
-		this.deselectAllObjects();
-/*
-	  debugger
-		event.target.name === 'selectAll' ? this.selectAllObjects() : this.deselectAllObjects();
-*/
-/*
-    const selectedOption = event.target.value
-			return
-
-
-    if (selectedOption === 'selectAll') {
-      if (this.state.selectedOption === 'All') {
-        this.deselectAllObjects()
-        this.toggleState('None')
-        return
-      }
-      this.selectAllObjects()
-      this.refs.deselectAll.checked=false
-      this.toggleState('All')
-    } else {
-      this.deselectAllObjects()
-      this.refs.selectAll.checked=false
-      this.toggleState('None')
-    }
-*/
+    switch(this.state.current){
+      case 'none':
+        this.selectAll();
+        break;
+      default:
+        this.deselectAll()
+    };
   }
-
-/*
-  selectAllObjects() {
-	  this.props.onClickHandler(this.props.objects);
-	  this.setState({
-		  selectAll: true,
-		  deselectAll: false
-	  });
-*/
-
-/*
-    let localSelected = _.clone(this.props.selected)
-
-    _.forEach(this.props.objects, (object) => {
-      localSelected.push(`${object.id}`)
-    })
-
-    this.props.onClickHandler(localSelected)
-*/
-//   }
-
-/*
-  deselectAllObjects() {
-		this.props.onClickHandler([])
-	  this.setState({
-		  deselectAll: true
-	  });
-  }
-*/
-
 
   selectAll(event) {
-	  console.log(event.target.checked, event.target.value)
 	  this.props.onClickHandler(this.props.objects);
-/*
-	  this.setState({
-		  deselectAll: false
-	  });
-*/
   }
 
   deselectAll(event) {
-	  console.log(event.target.checked, event.target.value)
 		this.props.onClickHandler([]);
-/*
-		this.setState({
-		  deselectAll: event.target.checked
-	  });
-*/
+
   }
-
-/*
-  buildCheckBoxNode(value, label){
-    return (
-      <span>
-        <input type='checkbox' name={value} checked={this.state[value]} onChange={this.selectOption}/>
-        {label}
-      </span>
-
-    )
-  }
-*/
-
-/*
-  toggleState(state) {
-    this.setState({selectedOption: state})
-  }
-*/
-
   getObjectId(obj) {
 	  return _.get(obj, this.props.idKey);
   }
@@ -158,26 +88,20 @@ export default class MultiSelect extends React.Component {
 	  return _.get(obj, this.props.displayKey);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.selected.length !== nextProps.selected.length) {
+      this.setState({current: this.getCurrentState(nextProps)})
+    }
+  }
+
   render() {
     return (
       <div>
-        <table className='multiselect table'>
-          <tr>
-            <td className={this.props.titleStyle}>{this.props.title}</td>
-            <td>
-       	      <span>
-			 					<input type='checkbox' name="selectAll" checked={_.isEqual(this.props.objects, this.props.selected)} onChange={this.selectAll}/>
-			 					<label>Select All</label>
-			 				</span>
-			 			</td>
-			 			<td>
-			 			  <span>
-			 					<input type='checkbox' name="deselectAll" checked={false} onChange={this.deselectAll}/>
-			 					<label>Deselect All</label>
-			 				</span>
-			 			</td>
-          </tr>
-        </table>
+        <div>
+          <span className={this.props.titleStyle}>{this.props.title}</span>
+          <i className={`fa ${this.possibleSelections[this.state.current].klass} fa-2x`} aria-hidden="true" onClick={this.selectOption}></i>
+          <label>{this.possibleSelections[this.state.current].label}</label>
+        </div>     
 
         <div className='multiselect border'>
           <ul className='multiselect objects-list'>
