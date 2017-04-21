@@ -3,116 +3,136 @@ import _ from 'lodash';
 
 export default class MultiSelect extends React.Component {
 
-  constructor(props) {
-    super(props);
+	static propTypes = {
+		idKey: React.PropTypes.string.isRequired,
+		displayKey: React.PropTypes.string.isRequired,
+		objects: React.PropTypes.array.isRequired,
+		selected: React.PropTypes.array.isRequired,
+		onClickHandler: React.PropTypes.func.isRequired,
+		title: React.PropTypes.string,
+		titleClassName: React.PropTypes.string
+	};
 
+	static defaultProps = {
+		title: 'Select 1 or more records',
+		titleClassName: ''
+	};
+
+
+	constructor(props) {
+		super(props);
+
+		this.possibleSelectionStates = {
+			all: {label: 'Deselect All', className: 'fa-check-square-o'},
+			none: {label: 'Select All', className: 'fa-square-o'},
+			mixed: {label: 'Deselect All', className: 'fa-minus-square-o'}
+		};
+
+		this.getCurrentSelectionState = this.getCurrentSelectionState.bind(this);
 		this.getObjectId = this.getObjectId.bind(this);
-		this.getSelected = this.getSelected.bind(this);
 		this.getObjectDisplayName = this.getObjectDisplayName.bind(this);
-    this.selectItem = this.selectItem.bind(this);
-    this.selectAll = this.selectAll.bind(this);
-    this.deselectAll = this.deselectAll.bind(this);
-    this.selectOption = this.selectOption.bind(this);
+		this.findInStoreByObjectId = this.findInStoreByObjectId.bind(this);
+		this.selectAll = this.selectAll.bind(this);
+		this.deselectAll = this.deselectAll.bind(this);
+		this.selectOption = this.selectOption.bind(this);
+		this.selectItem = this.selectItem.bind(this);
 
-    this.possibleSelections = {
-      all: {label: 'Deselect All', klass: 'fa-check-square-o'},
-      none: {label: 'Select All', klass: 'fa-square-o'},
-      mixed: {label: 'Deselect All', klass: 'fa-minus-square-o'}
-    };
+		this.state = {
+			selected: props.selected
+		};
+	}
 
-    this.state = {
-      current: this.getCurrentState(props)
-    };
-  }
 
-  static propTypes = {
-	  idKey: React.PropTypes.string.isRequired,
-	  displayKey: React.PropTypes.string.isRequired,
-    objects: React.PropTypes.array.isRequired,
-    selected: React.PropTypes.array.isRequired,
-    onClickHandler: React.PropTypes.func.isRequired,
-    title: React.PropTypes.string,
-    titleStyle: React.PropTypes.string
-  };
+	getCurrentSelectionState() {
+		return _.isEmpty(this.state.selected) ? 'none' : (this.state.selected.length !== this.props.objects.length ? 'mixed' : 'all');
+	}
 
-  static defaultProps = {
-    title: 'Select 1 or more records',
-    titleStyle: 'multiselect title-bar title'
-  };
 
-  getCurrentState(props){
-    return _.isEmpty(props.selected) ? 'none' : (props.objects.length !== props.selected.length ? 'mixed' : 'all');
-  }
+	findInStoreByObjectId(store, objectId) {
+		return _.find(store, object => this.getObjectId(object).toString() === objectId.toString());
+	}
 
-  getSelected(objectID) {
-	  return _.find(this.props.selected, object => this.getObjectId(object) === objectID);
-  }
 
-  selectItem(event) {
-    const objectID = event.target.attributes.getNamedItem("data-objectID").value;
-    let localSelected = _.clone(this.props.selected);
-    const selectedObj = _.find(this.props.selected, object => `${this.getObjectId(object)}` === objectID);
+	selectItem(event) {
+		let currentSelected = _.clone(this.state.selected);
+		const objectId = event.target.attributes.getNamedItem("data-objectID").value;
+		const selectedObj = this.findInStoreByObjectId(currentSelected, objectId);
+		if( selectedObj ) {
+			_.pull(currentSelected, selectedObj);
+		} else {
+			currentSelected.push(this.findInStoreByObjectId(this.props.objects, objectId));
+		}
+		this.setState({selected: currentSelected});
+		this.props.onClickHandler(currentSelected);
+	}
 
-    if (selectedObj) {
-      _.pull(localSelected, selectedObj);
-    } else {
-	    localSelected.push(_.find(this.props.objects, object => `${this.getObjectId(object)}` === objectID));
-    }
 
-    this.props.onClickHandler(localSelected);
-  }
+	selectOption(event) {
+		this.getCurrentSelectionState() === 'none' ? this.selectAll() : this.deselectAll();
+	}
 
-  selectOption(event) {
-    this.state.current === 'none' ? this.selectAll() : this.deselectAll();
-  }
 
-  selectAll(event) {
-	  this.props.onClickHandler(this.props.objects);
-  }
+	selectAll(event) {
+		this.setState({selected: this.props.objects});
+		this.props.onClickHandler(this.props.objects);
+	}
 
-  deselectAll(event) {
+
+	deselectAll(event) {
+		this.setState({selected: []});
 		this.props.onClickHandler([]);
+	}
 
-  }
-  getObjectId(obj) {
-	  return _.get(obj, this.props.idKey);
-  }
 
-  getObjectDisplayName(obj) {
-	  return _.get(obj, this.props.displayKey);
-  }
+	getObjectId(obj) {
+		return _.get(obj, this.props.idKey);
+	}
 
-  componentWillReceiveProps(nextProps) {
-    if(this.props.selected.length !== nextProps.selected.length) {
-      this.setState({current: this.getCurrentState(nextProps)});
-    }
-  }
 
-  render() {
-    return (
-      <div>
-        <div>
-          <span className={this.props.titleStyle}>{this.props.title}</span>
-          <i className={`fa ${this.possibleSelections[this.state.current].klass}`} aria-hidden="true" onClick={this.selectOption}></i>
-          <label>{this.possibleSelections[this.state.current].label}</label>
-        </div>
+	getObjectDisplayName(obj) {
+		return _.get(obj, this.props.displayKey);
+	}
 
-        <div className='multiselect border'>
-          <ul className='multiselect objects-list'>
-            {this.props.objects.map((object, index) => {
-              return (
-                <li
-                  key={index}
-                  onClick={this.selectItem}
-                  data-objectID={this.getObjectId(object)}
-                  className={`multiselect object ${!!this.getSelected(this.getObjectId(object)) ? 'multi-select selected' : ''}`}>
-                  {this.getObjectDisplayName(object)}
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      </div>
-    );
-  }
+
+	componentWillReceiveProps(nextProps) {
+		if(this.state.selected.length !== nextProps.selected.length) {
+			this.setState({selected: nextProps.selected});
+		}
+	}
+
+
+	render() {
+		const currentSelectionState = this.getCurrentSelectionState();
+		return (
+			<div className='multiselect'>
+				<div className='multiselect-title-bar'>
+					<div className={`title ${this.props.titleClassName}`}>{this.props.title}</div>
+					<div className='multiselect-selectoption'>
+						<span className={`fa ${this.possibleSelectionStates[currentSelectionState].className}`} onClick={this.selectOption} />
+						<span>{this.possibleSelectionStates[currentSelectionState].label}</span>
+					</div>
+				</div>
+				<div className='multiselect-objects'>
+					<ul className='multiselect-objects-list no-style'>
+						{
+							this.props.objects.map( object => {
+								const objectId = this.getObjectId(object);
+								const isObjectSelected = !!this.findInStoreByObjectId(this.state.selected, objectId);
+								return (
+									<li
+										key={objectId}
+										onClick={this.selectItem}
+										data-objectID={this.getObjectId(object)}
+										className={`object ${isObjectSelected ? 'selected' : ''}`}
+									>
+										{this.getObjectDisplayName(object)}
+									</li>
+								);
+							})
+						}
+					</ul>
+				</div>
+			</div>
+		);
+	}
 }
